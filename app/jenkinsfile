@@ -1,10 +1,10 @@
 pipeline {
+  agent any
+  tools {}
   stages {
     stage('build') {
       steps {
-        sh '''
-            docker-compose up --build -d
-        '''
+        sh ''' docker - compose up--build - d  '''
       }
     }
     stage('test') {
@@ -15,7 +15,7 @@ pipeline {
         always {
           junit 'test-reports/*.xml'
         }
-      }    
+      }
     }
   }
 }
