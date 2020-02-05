@@ -3,11 +3,9 @@ pipeline {
   stages {
     stage('build') {
       steps { 
-        dir('change-dir') {
-                    sh 'cd "${WORKSPACE}" + "/app"'
+        dir('app') {
+                    sh ''' /usr/local/bin/docker-compose up --build --detach'''
                 }
-        sh ''' pwd ''' 
-        sh ''' /usr/local/bin/docker-compose up --build --detach'''
       }
     }
     stage('test') {
