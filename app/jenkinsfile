@@ -11,7 +11,7 @@ pipeline {
     stage('test') {
       steps {
         dir('app') {
-          sh 'python3 app_test.py'
+          sh '/usr/bin/python3 app_test.py'
         }
       }
       post {
