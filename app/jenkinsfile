@@ -1,0 +1,75 @@
+pipeline {
+    environment {
+        Registry = "iad.ocir.io/cxunitydevcorp/cxunitysbx/cxunity-api-poc"
+        Credential = 'RaviToken'
+        dockerImage = ''
+        dockerFile = 'Dockerfile'
+        //dockerDir = './src/main/docker'
+    }
+    agent any
+        tools {
+            //maven 'maven-3.3.9'
+            // since this a Python app no build tool is needed
+        }
+ 
+    stages {
+        stage('Compile & UT') {
+            steps {
+                echo 'Installing latst Node JS Package Manager'
+                sh 'export http_proxy=http://www-proxy.us.oracle.com:80'
+                sh 'export https_proxy=http://www-proxy.us.oracle.com:80'
+                sh 'npm install'
+                echo 'Compiling app and running UTs...'
+                sh 'mvn -U clean package'
+                echo '######## Copying build jar file to docker context directory ########'
+                //sh 'cp -rf ./target/*.jar ./src/main/docker'
+                }
+            }
+ 
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                script {
+                   //dir("${dockerDir}"){
+                   dockerImage = docker.build("${ociRegistry}", "-f ${dockerFile} .")
+                  //}
+                }
+              }
+            }
+        stage('Push Image to OCIR') {
+             steps {
+                echo 'Logging in and pushing image to OCIR...'
+                script {
+                    docker.withRegistry( 'https://iad.ocir.io', ociCredential ) {
+                    dockerImage.push("${BUILD_NUMBER}" + "qa")
+                    echo env.UI_BUILD_NUMBER
+                    sh 'pwd'
+                    sh "echo api=iad.ocir.io/cxunitydevcorp/cxunitysbx/cxunity-api-poc:${env.BUILD_NUMBER}qa > sridhar-api.properties"
+                   }
+                 }
+               }
+            }
+        }
+    }
+
+
+pipeline {
+  agent { docker { image 'python:3.7.2' } }
+  stages {
+    stage('build') {
+      steps {
+        sh 'pip install -r requirements.txt'
+      }
+    }
+    stage('test') {
+      steps {
+        sh 'python test.py'
+      }
+      post {
+        always {
+          junit 'test-reports/*.xml'
+        }
+      }    
+    }
+  }
+}

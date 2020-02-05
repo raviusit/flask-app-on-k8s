@@ -1,0 +1,30 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: flask-app
+  labels:
+    app: flask-app
+spec:
+  selector:
+    matchLabels:
+      app: flask-app
+      tier: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: flask-app
+        tier: frontend
+    spec:
+      containers:
+      - name: flask-app
+        image: docker.io/raviusit/maerskdemo
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+        - name: REDIS_ENDPOINT
+          value: 'redis-master'
+        ports:
+        - containerPort: 8000
