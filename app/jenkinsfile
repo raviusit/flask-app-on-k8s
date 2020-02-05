@@ -2,10 +2,8 @@ pipeline {
   agent any
   stages {
     stage('build') {
-      steps {
-        sh ''' cd app/ '''
-        sh ''' pwd ''' 
-        sh ''' cd "${env.WORKSPACE}" + "/app" '''
+      steps { 
+        sh ''' cd "${WORKSPACE}" + "/app" '''
         sh ''' pwd ''' 
         sh ''' /usr/local/bin/docker-compose up --build --detach'''
       }
