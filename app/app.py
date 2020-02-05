@@ -6,20 +6,20 @@ from datetime import datetime
 import json
 import redis
 from flask import Flask, redirect
-import logging
-from logging.handlers import RotatingFileHandler
+#import logging
+#from logging.handlers import RotatingFileHandler
 
 # Logging
-logger = logging.getLogger('logger_1')
-logger.setLevel(logging.ERROR)
+#logger = logging.getLogger('logger_1')
+#logger.setLevel(logging.ERROR)
 
-formatter = logging.Formatter('%(name)s -- %(asctime)s -- %(levelname)s -- %(message)s')
+#formatter = logging.Formatter('%(name)s -- %(asctime)s -- %(levelname)s -- %(message)s')
 
-log_handler = RotatingFileHandler('logs/log.log', maxBytes=500*1024, backupCount=2) # 500KB
-log_handler.setLevel(logging.ERROR)
-log_handler.setFormatter(formatter)
+#log_handler = RotatingFileHandler('logs/log.log', maxBytes=500*1024, backupCount=2) # 500KB
+#log_handler.setLevel(logging.ERROR)
+#log_handler.setFormatter(formatter)
 
-logger.addHandler(log_handler)
+#logger.addHandler(log_handler)
 
 
 
