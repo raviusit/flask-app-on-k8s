@@ -3,7 +3,9 @@ pipeline {
   stages {
     stage('build') {
       steps { 
+
         dir('app') {
+                    sh ''' mkdir logs '''
                     sh ''' sudo /usr/local/bin/docker-compose up --build --detach'''
                 }
       }
