@@ -53,15 +53,19 @@ With docker-compose, we only have to write a docker-compose.yml file to configur
 Then, with a single command we created and started all the services from the configuration.
 
 [vagrant@MaerskExercise app]$ docker ps
+
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                                     PORTS                    NAMES
 2dd7e45cdee3        app_flask           "python app.py"          4 seconds ago       Up 2 second (health: starting)   0.0.0.0:8000->8000/tcp   app_flask_1
 d7417b40e57b        redis:latest        "docker-entrypoint..."   5 seconds ago       Up 4 seconds                               0.0.0.0:6379->6379/tcp   redis
 
+
 [vagrant@MaerskExercise app]$ docker-compose ps
-   Name                  Command               State           Ports
+
+Name                  Command               State           Ports
 -----------------------------------------------------------------------------
 app_flask_1   python app.py                    Up(healthy)      0.0.0.0:8000->8000/tcp
 redis         docker-entrypoint.sh redis ...   Up               0.0.0.0:6379->6379/tcp
+
 
 [vagrant@MaerskExercise app]$ curl http://0.0.0.0:8000/get
 {"time": "b'2020-02-02 12:47:10.403776'"}
