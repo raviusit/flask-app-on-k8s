@@ -3,8 +3,7 @@ pipeline {
   stages {
     stage('build') {
       steps {
-        sh ''' cd app'''
-        sh ''' /usr/local/bin/docker-compose up --build --detach'''
+        sh ''' /usr/local/bin/docker-compose up --build --detach -f app/docker-compose.yml'''
       }
     }
     stage('test') {
