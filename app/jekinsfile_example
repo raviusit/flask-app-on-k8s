@@ -1,0 +1,65 @@
+pipeline {
+    environment {
+        ociRegistry = "iad.ocir.io/cxunitydevcorp/cxunitysbx/cxunity-api-poc"
+        ociCredential = 'raviToken'
+        dockerImage = ''
+        dockerFile = 'Dockerfile'
+        //dockerDir = './src/main/docker'
+    }
+    agent any
+        tools {
+            maven 'maven-3.3.9'
+        }
+ 
+    stages {
+        stage('Compile & UT') {
+            steps {
+                echo 'Installing latst Node JS Package Manager'
+                sh 'export http_proxy=http://XXXXXXX.com:80'
+                sh 'export https_proxy=http://XXXXXX.com:80'
+                sh 'npm install'
+                echo 'Compiling app and running UTs...'
+                ///sh 'mvn clean package -DskipTests'
+                sh 'mvn clean package'
+                echo '######## Copying build jar file to docker context directory ########'
+                //sh 'cp -rf ./target/*.jar ./src/main/docker'
+                }
+            }
+ 
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                script {
+                   //dir("${dockerDir}"){
+                   dockerImage = docker.build("${ociRegistry}", "-f ${dockerFile} .")
+                  //}
+                }
+              }
+            }
+        stage('Push Image to OCIR') {
+             steps {
+                echo 'Logging in and pushing image to OCIR...'
+                script {
+                    docker.withRegistry( 'https://XXXXXXX', ociCredential ) {
+                    dockerImage.push("api-" + "${params.Environment_Name}" + "-${BUILD_NUMBER}")
+                    echo env.UI_BUILD_NUMBER
+                    sh 'pwd'
+                    sh "echo api-${params.Environment_Name}-${BUILD_NUMBER} > sridhar-api_preview.properties"
+                    api_image = readFile('sridhar-api_preview.properties').trim()
+                    echo "Sridhar API Image ====> ${api_image}"
+                   }
+                 }
+               }
+            }
+       stage('Deploy') {
+             steps {
+                echo "################################################################################################################################"
+                echo "Deploying API Image iad.ocir.io/cxunitydevcorp/cxunitysbx/cxunity-api-poc:${api_image} on environment ${params.Environment_Name}"
+                echo "Environment Name = ${params.Environment_Name}"
+                echo "CXUNITY API  image = iad.ocir.io/cxunitydevcorp/cxunitysbx/cxunity-api-poc:${api_image}"
+                echo "################################################################################################################################"
+                sh "ssh -i ~/.ssh/id_rsa opc@XXX.XXX.XX.XX . /home/opc/ravi/${params.Environment_Name}/deploy_api.sh ${params.Environment_Name} ${api_image}"
+             }
+        }
+        }
+    }
