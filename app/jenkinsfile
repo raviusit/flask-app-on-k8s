@@ -4,6 +4,7 @@ pipeline {
     stage('build') {
       steps {
         sh ''' cd app/ '''
+        sh ''' echo pwd '''
         sh ''' /usr/local/bin/docker-compose up --build --detach'''
       }
     }
