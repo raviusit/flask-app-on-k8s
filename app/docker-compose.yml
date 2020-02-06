@@ -17,6 +17,10 @@ services:
     build:
       context: .
     restart: always
+    environment:
+      - REDIS_ENDPOINT=redis
+      - REDIS_PORT=6379
+      - VERSION=1.1.1
     ports:
       - "8000:8000"
     depends_on:

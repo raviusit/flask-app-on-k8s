@@ -4,21 +4,8 @@ pipeline {
     stage('build') {
       steps { 
         dir('app') {
-                    sh ''' mkdir logs '''
                     sh ''' sudo /usr/local/bin/docker-compose up --build --detach'''
                 }
-      }
-    }
-    stage('test') {
-      steps {
-        dir('app') {
-          sh '/usr/bin/python3 app_test.py'
-        }
-      }
-      post {
-        always {
-          junit 'test-reports/*.xml'
-        }
       }
     }
   }
