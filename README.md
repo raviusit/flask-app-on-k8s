@@ -1,4 +1,5 @@
-# maerskdemo
+# Demo project for Maersk Line
+
 > This project is created demonstrate a deployment model which involves tools like docker, docker-compose, kubenetes using minikube, continuous integration and deployment using jenkins for a Python Flask app and a Redis database
 
 ```
